@@ -233,6 +233,7 @@ public class OracleStructureAssistant implements DBSStructureAssistant<OracleExe
                 }
             } else if (DBSProcedure.class.isAssignableFrom(objectType.getTypeClass())) {
                 oracleObjectTypes.add(OracleObjectType.FUNCTION);
+                oracleObjectTypes.add(OracleObjectType.PROCEDURE);
             }
         }
         oracleObjectTypes.add(OracleObjectType.SYNONYM);
@@ -243,8 +244,10 @@ public class OracleStructureAssistant implements DBSStructureAssistant<OracleExe
         if (objectTypeClause.length() == 0) {
             return;
         }
-        // Always search for synonyms
-        objectTypeClause.append(",'").append(OracleObjectType.SYNONYM.getTypeName()).append("'");
+        if (!oracleObjectTypes.contains(OracleObjectType.SYNONYM)) {
+            // Always search for synonyms
+            objectTypeClause.append(",'").append(OracleObjectType.SYNONYM.getTypeName()).append("'");
+        }
 
         // Seek for objects (join with public synonyms)
         OracleDataSource dataSource = (OracleDataSource) session.getDataSource();
